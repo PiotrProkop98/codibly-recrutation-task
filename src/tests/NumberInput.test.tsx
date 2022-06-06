@@ -2,7 +2,7 @@ import { render, fireEvent } from '@testing-library/react';
 
 import NumberInput from '../components/NumberInput';
 
-test('Renders App component correctly.', () => {
+test('Renders NumberInput component correctly.', () => {
   const { container } = render(<NumberInput />);
   const elements = container.getElementsByClassName('NumberInput');
   expect(elements.length).toBe(1);

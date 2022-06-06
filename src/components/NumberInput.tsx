@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, TextField } from '@mui/material';
+import { TextField } from '@mui/material';
 
 const NumberInput = () => {
     const [value, setValue] = React.useState('');
@@ -11,15 +11,13 @@ const NumberInput = () => {
 
     return (
     <div className="NumberInput">
-        <Container maxWidth="sm" sx={{ marginTop: '50px', textAlign: 'center' }}>
-            <TextField
-                label="Filter by ID"
-                variant="outlined"
-                value={value}
-                sx={{ width: '90%' }}
-                onChange={e => handleChange(e)}
-            />
-        </Container>
+        <TextField
+            label="Filter by ID"
+            variant="outlined"
+            value={value}
+            sx={{ width: '90%' }}
+            onChange={e => handleChange(e)}
+        />
     </div>
     );
 };

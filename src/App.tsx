@@ -1,17 +1,21 @@
 import React from 'react';
-import { Container } from '@mui/material';
 
-import NumberInput from './components/NumberInput';
-import DataTable from './components/DataTable';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route
+} from 'react-router-dom';
+
+
+import Main from './pages/Main';
 
 const App = () => {
   return (
-    <div className="App">
-      <Container maxWidth="sm" sx={{ marginTop: '50px', textAlign: 'center' }}>
-        <NumberInput />
-        <DataTable />
-      </Container>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/*" element={<Main />}></Route>
+      </Routes>
+    </Router>
   );
 };
 

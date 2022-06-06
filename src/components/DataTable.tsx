@@ -1,7 +1,18 @@
 import React from 'react';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 
-const DataTable = () => {
+interface Product {
+    id: number,
+    name: string,
+    year: string,
+    color: string
+};
+
+interface PropsType {
+    products: Array<Product>
+};
+
+const DataTable = (props: PropsType) => {
   return (
     <div className="DataTable">
         <TableContainer component={Paper} sx={{ width: '90%', margin: '20px auto 0 auto' }}>
@@ -14,7 +25,13 @@ const DataTable = () => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-
+                    {props.products.map((product: Product, key: number) => (
+                        <TableRow key={key} sx={{ backgroundColor: product.color }}>
+                            <TableCell>{product.id}</TableCell>
+                            <TableCell>{product.name}</TableCell>
+                            <TableCell>{product.year}</TableCell>
+                        </TableRow>
+                    ))}
                 </TableBody>
             </Table>
         </TableContainer>

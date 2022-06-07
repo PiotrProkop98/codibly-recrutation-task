@@ -6,6 +6,7 @@ import { CircularProgress, Container } from '@mui/material';
 
 import NumberInput from '../components/NumberInput';
 import DataTable from '../components/DataTable';
+import PaginationButtonGroup from '../components/PaginationButtonGroup';
 
 interface ProductsMeta {
   page: number,
@@ -22,6 +23,11 @@ const Main = () => {
   const [products, productsSet] = React.useState<any>([]);
   const [productsMeta, productsMetaSet] = React.useState<ProductsMeta>();
 
+  const [page, pageSet] = React.useState<number>(1);
+
+  const [paginationButtonNextDisable, paginationButtonNextDisableSet] = React.useState<boolean>(false);
+  const [paginationButtonPreviousDisable, paginationButtonPreviousDisableSet] = React.useState<boolean>(false);
+
   const [inputValue, inputValueSet] = React.useState<string>('');
 
   const [isLoading, isLoadingSet] = React.useState<boolean>(false);
@@ -32,6 +38,28 @@ const Main = () => {
     const newValue = e.target.value.replace(/\D/g,'');
     inputValueSet(newValue);
   };
+
+  const handleNextButtonClick = () => {
+    if (productsMeta?.total_pages === page) {
+      paginationButtonNextDisableSet(true);
+      return;
+    } else {
+      paginationButtonNextDisableSet(false);
+    }
+
+    pageSet(page + 1);
+  };
+
+  const handlePreviousButtonClick = () => {
+    if (page === 1) {
+      paginationButtonPreviousDisableSet(true);
+      return;
+    } else {
+      paginationButtonPreviousDisableSet(false);
+    }
+
+    pageSet(page - 1);
+  }; 
 
   const handleRequest = () => {
     if (!searchParams.get('id')) {
@@ -46,6 +74,9 @@ const Main = () => {
 
     if (!searchParams.get('page')) {
       searchParams.append('page', '1');
+    } else {
+      console.log(page);
+      searchParams.set('page', String(page));
     }
 
     if (!searchParams.get('per_page')) {
@@ -96,8 +127,22 @@ const Main = () => {
   }, []);
 
   React.useEffect(() => {
+    if (productsMeta?.total_pages === page) {
+      paginationButtonNextDisableSet(true);
+    } else {
+      paginationButtonNextDisableSet(false);
+    }
+
+    if (page === 1) {
+      paginationButtonPreviousDisableSet(true);
+    } else {
+      paginationButtonPreviousDisableSet(false);
+    }
+  }, [page]);
+
+  React.useEffect(() => {
     handleRequest();
-  }, [inputValue]);
+  }, [inputValue, page]);
 
   return (
     <div className="Main">
@@ -108,7 +153,15 @@ const Main = () => {
         {!isLoading && (
           <>
             <DataTable products={products} />
-          </>)}
+          </>
+        )}
+
+        <PaginationButtonGroup
+          handleOnNextClick={handleNextButtonClick}
+          handleOnPreviousClick={handlePreviousButtonClick}
+          nextButtonDisabled={paginationButtonNextDisable}
+          previousButtonDisabled={paginationButtonPreviousDisable}
+        />
       </Container>
     </div>
   );

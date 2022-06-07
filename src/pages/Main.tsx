@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 
 import { CircularProgress, Container } from '@mui/material';
@@ -17,13 +17,12 @@ const baseUrl = 'https://reqres.in/api/products';
 
 const Main = () => {
   const navigate = useNavigate();
+  const [searchParams, searchParamsSet] = useSearchParams();
 
   const [products, productsSet] = React.useState<any>([]);
   const [productsMeta, productsMetaSet] = React.useState<ProductsMeta>();
 
   const [inputValue, inputValueSet] = React.useState<string>('');
-
-  const [page, pageSet] = React.useState<string>('1');
 
   const [isLoading, isLoadingSet] = React.useState<boolean>(false);
 
@@ -35,24 +34,32 @@ const Main = () => {
   };
 
   const handleRequest = () => {
+    if (!searchParams.get('id')) {
+      if (inputValue !== null && inputValue !== '') {
+        searchParams.append('id', inputValue);
+      }
+    } else if (inputValue === null || inputValue === '') {
+      searchParams.delete('id');
+    } else {
+      searchParams.set('id', inputValue);
+    }
+
+    if (!searchParams.get('page')) {
+      searchParams.append('page', '1');
+    }
+
+    if (!searchParams.get('per_page')) {
+      searchParams.append('per_page', '5');
+    }
+
+    searchParamsSet(searchParams);
+
     let url = '';
 
-    if (inputValue !== null && inputValue !== '') {
-      url = `?id=${inputValue}`;
-    }
-
-    if (page !== null || page !== '') {
-      if (url !== '') {
-        url += `&page=${page}`;
-      } else {
-        url += `?page=${page}`;
-      }
-    }
-
-    if (url === '' && page === '') {
-      url += '?per_page=5';
+    if (searchParams.get('id')) {
+      url = `?id=${searchParams.get('id')}&page=${searchParams.get('page')}&per_page=${searchParams.get('per_page')}`;
     } else {
-      url += '&per_page=5';
+      url = `?page=${searchParams.get('page')}&per_page=${searchParams.get('per_page')}`;
     }
 
     navigate(url);
